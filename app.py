@@ -14,6 +14,10 @@ st.title("Attendance Tracker")
 
 name = st.text_input("Employee Name")
 
+# Display success message after rerun
+if "success_message" in st.session_state:
+    st.success(st.session_state["success_message"])
+
 
 @st.dialog("Confirm Attendance")
 def confirm_timein():
@@ -37,22 +41,27 @@ def confirm_timein():
             )
 
             if existing.data:
-                st.warning(f"{name} has already timed in today.")
+                st.session_state["success_message"] = (
+                    f"{name} has already timed in today."
+                )
             else:
+
                 supabase.table("attendance").insert({
                     "name": name.strip(),
                     "date": today,
                     "time_in": current_time.strftime("%I:%M:%S %p")
                 }).execute()
 
-                st.success(
-                    f"Attendance logged at "
+                st.session_state["success_message"] = (
+                    f"✅ {name} timed in successfully at "
                     f"{current_time.strftime('%I:%M:%S %p')}"
                 )
 
-        with col2:
-            if st.button("❌ Cancel"):
-                st.rerun()
+            st.rerun()
+
+    with col2:
+        if st.button("❌ Cancel"):
+            st.rerun()
 
 
 if st.button("Time In"):
