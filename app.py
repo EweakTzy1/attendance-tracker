@@ -63,6 +63,9 @@ teams = {
         "Patrick Allan Arcinas",
         "Eric Ebreo"
     ],
+    "DM": [
+        "Eric Ebreo"
+    ],
     "UAM": [
         "JP Concepcion"
     ]
