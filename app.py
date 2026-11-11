@@ -53,7 +53,7 @@ teams = {
     ],
     "QM": [
         "CJ Carino",
-        "Sonny Escol",
+        "Sonny Escol Jr.",
         "Mark Anthony Angcay",
         "Danielle Klare Romero",
         "Abigael Mangarin",
