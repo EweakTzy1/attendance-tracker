@@ -3,7 +3,7 @@ from supabase import create_client
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
-st.set_option("client.toolbarMode", "viewer")
+
 # ==========================================
 # Page Configuration
 # ==========================================
@@ -12,6 +12,8 @@ st.set_page_config(
     page_icon="⏰",
     layout="centered"
 )
+# Set Streamlit viewer mode (hides developer manage options)
+st.set_option("client.toolbarMode", "viewer")
 
 # ==========================================
 # Supabase Connection
