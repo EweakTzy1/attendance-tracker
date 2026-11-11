@@ -3,6 +3,7 @@ from supabase import create_client
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
+st.set_option("client.toolbarMode", "viewer")
 # ==========================================
 # Page Configuration
 # ==========================================
