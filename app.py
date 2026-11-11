@@ -4,6 +4,15 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 # ==========================================
+# Page Configuration
+# ==========================================
+st.set_page_config(
+    page_title="Attendance Tracker",
+    page_icon="⏰",
+    layout="centered"
+)
+
+# ==========================================
 # Supabase Connection
 # ==========================================
 url = st.secrets["SUPABASE_URL"]
@@ -57,19 +66,10 @@ teams = {
 }
 
 # ==========================================
-# Page Title
+# App Header
 # ==========================================
-st.set_page_config(
-    page_title="Attendance Tracker",
-    page_icon="⏰",
-    layout="centered"
-)
-
 st.title("⏰ Attendance Tracker")
 
-# ==========================================
-# Current Time
-# ==========================================
 current_time = datetime.now(PH_TIMEZONE)
 
 st.info(
@@ -86,12 +86,11 @@ selected_team = st.selectbox(
 )
 
 # ==========================================
-# Name Selection
+# Employee Selection
 # ==========================================
 selected_name = ""
 
 if selected_team:
-
     selected_name = st.selectbox(
         "Select Your Name",
         [""] + sorted(teams[selected_team])
@@ -110,15 +109,14 @@ if "success_message" in st.session_state:
 def confirm_timein():
 
     st.write(
-        f"Are you sure you want to log attendance for "
-        f"**{selected_name}**?"
+        f"Are you sure you want to log attendance for **{selected_name}**?"
     )
 
     col1, col2 = st.columns(2)
 
     with col1:
 
-        if st.button("✅ Confirm"):
+        if st.button("✅ Confirm", use_container_width=True):
 
             current_time = datetime.now(PH_TIMEZONE)
             today = current_time.strftime("%Y-%m-%d")
@@ -155,7 +153,7 @@ def confirm_timein():
 
     with col2:
 
-        if st.button("❌ Cancel"):
+        if st.button("❌ Cancel", use_container_width=True):
             st.rerun()
 
 # ==========================================
@@ -171,31 +169,3 @@ if st.button("Time In", use_container_width=True):
 
     else:
         confirm_timein()
-
-# ==========================================
-# Attendance Records
-# ==========================================
-st.divider()
-
-st.subheader("Attendance Records")
-
-try:
-
-    records = (
-        supabase.table("attendance")
-        .select("*")
-        .order("id", desc=True)
-        .execute()
-    )
-
-    if records.data:
-        st.dataframe(
-            records.data,
-            use_container_width=True,
-            hide_index=True
-        )
-    else:
-        st.info("No attendance records found.")
-
-except Exception as e:
-    st.error(f"Error loading records: {e}")
