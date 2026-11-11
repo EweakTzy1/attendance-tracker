@@ -12,35 +12,27 @@ st.title("Attendance Tracker")
 # Employee Name
 name = st.text_input("Employee Name")
 
-# Manual Time Input
-time_in = st.text_input(
-    "Time In (HH:MM)",
-    placeholder="08:30"
-)
-
-# Save Record
-if st.button("Submit Attendance"):
+# Time In Button
+if st.button("Time In"):
 
     if not name:
         st.error("Please enter your name.")
     else:
-        try:
-            # Validate HH:MM format
-            datetime.strptime(time_in, "%H:%M")
 
-            response = supabase.table("attendance").insert({
-                "name": name,
-                "time_in": time_in,
-                "date": datetime.now().strftime("%Y-%m-%d")
-            }).execute()
+        current_time = datetime.now()
 
-            st.success(f"Attendance recorded for {name}")
+        supabase.table("attendance").insert({
+            "name": name,
+            "date": current_time.strftime("%Y-%m-%d"),
+            "time_in": current_time.strftime("%H:%M:%S")
+        }).execute()
 
-        except ValueError:
-            st.error("Time must be in HH:MM format (example: 08:30)")
+        st.success(
+            f"{name} timed in at {current_time.strftime('%H:%M:%S')}"
+        )
 
-# View Raw Records
-st.subheader("Raw Attendance Data")
+# Display records
+st.subheader("Attendance Records")
 
 records = supabase.table("attendance").select("*").execute()
 
