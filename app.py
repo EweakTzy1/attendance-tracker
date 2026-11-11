@@ -66,7 +66,7 @@ teams = {
 }
 
 # ==========================================
-# App Header
+# Header
 # ==========================================
 st.title("⏰ Attendance Tracker")
 
@@ -169,3 +169,51 @@ if st.button("Time In", use_container_width=True):
 
     else:
         confirm_timein()
+
+# ==========================================
+# Today's Attendance Data
+# ==========================================
+today = datetime.now(PH_TIMEZONE).strftime("%Y-%m-%d")
+
+attendance_today = (
+    supabase.table("attendance")
+    .select("*")
+    .eq("date", today)
+    .execute()
+)
+
+timed_in_names = {
+    record["name"]
+    for record in attendance_today.data
+}
+
+# ==========================================
+# Not Yet Timed In
+# ==========================================
+st.divider()
+st.subheader("❌ Employees Without Time In")
+
+total_pending = 0
+
+for team, members in teams.items():
+
+    not_timed_in = [
+        member
+        for member in members
+        if member not in timed_in_names
+    ]
+
+    total_pending += len(not_timed_in)
+
+    with st.expander(
+        f"{team} ({len(not_timed_in)} pending)",
+        expanded=False
+    ):
+
+        if not_timed_in:
+
+            for person in sorted(not_timed_in):
+                st.write(f"🔴 {person}")
+
+        else:
+          
