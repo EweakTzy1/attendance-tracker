@@ -216,4 +216,51 @@ for team, members in teams.items():
                 st.write(f"🔴 {person}")
 
         else:
-          
+            st.success("✅ Everyone has timed in.")
+
+st.info(f"Total Pending Attendance: {total_pending}")
+
+# ==========================================
+# Timed In Today
+# ==========================================
+st.divider()
+st.subheader("✅ Timed In Today")
+
+if attendance_today.data:
+
+    for record in sorted(
+        attendance_today.data,
+        key=lambda x: x["name"]
+    ):
+
+        st.write(
+            f"✅ {record['name']} "
+            f"({record['team']}) - "
+            f"{record['time_in']}"
+        )
+
+else:
+    st.warning("No attendance records for today.")
+
+# ==========================================
+# Attendance Summary
+# ==========================================
+total_members = sum(
+    len(members)
+    for members in teams.values()
+)
+
+total_timed_in = len(timed_in_names)
+
+st.divider()
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.metric("Total Members", total_members)
+
+with col2:
+    st.metric("Timed In", total_timed_in)
+
+with col3:
+    st.metric("Pending", total_members - total_timed_in)
