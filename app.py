@@ -60,7 +60,6 @@ teams = {
         "Danielle Klare Romero",
         "Abigael Mangarin",
         "Patrick Allan Arcinas",
-        "Eric Ebreo"
     ],
     "DM": [
         "Eric Ebreo"
