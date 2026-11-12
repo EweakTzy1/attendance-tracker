@@ -131,21 +131,127 @@ def confirm_timein():
 
         if st.button("✅ Confirm", use_container_width=True):
 
-            current_time = datetime.now(PH_TIMEZONE)
-            today = current_time.strftime("%Y-%m-%d")
+            today = datetime.now(
+                PH_TIMEZONE
+            ).strftime("%Y-%m-%d")
 
-            existing = (
-                supabase.table("attendance")
-                .select("*")
-                .eq("name", selected_name)
-                .eq("date", today)
-                .execute()
-            )
+            try:
 
-            if existing.data:
-
-                st.session_state["success_message"] = (
-                    f"⚠️ {selected_name} has already timed in today."
+                # Check if already timed in
+                existing = (
+                    supabase.table("attendance")
+                    .select("*")
+                    .eq("name", selected_name)
+                    .eq("date", today)
+                    .execute()
                 )
 
-       
+                if existing.data:
+
+                    st.session_state["success_message"] = (
+                        f"⚠️ {selected_name} "
+                        f"has already timed in today."
+                    )
+
+                else:
+
+                    # Insert record
+                    insert_result = (
+                        supabase.table("attendance")
+                        .insert(
+                            {
+                                "name": selected_name,
+                                "team": selected_team,
+                                "date": today,
+                                "time_in": time_in_value
+                            }
+                        )
+                        .execute()
+                    )
+
+                    # Verify insert
+                    verification = (
+                        supabase.table("attendance")
+                        .select("*")
+                        .eq("name", selected_name)
+                        .eq("date", today)
+                        .execute()
+                    )
+
+                    if verification.data:
+
+                        st.session_state["success_message"] = (
+                            f"✅ Attendance uploaded successfully!\n\n"
+                            f"Employee: {selected_name}\n"
+                            f"Team: {selected_team}\n"
+                            f"Time In: {time_in_value}"
+                        )
+
+                    else:
+
+                        st.session_state["success_message"] = (
+                            "❌ Record could not be verified "
+                            "after upload."
+                        )
+
+            except Exception as e:
+
+                st.session_state["success_message"] = (
+                    f"❌ Database Error:\n{str(e)}"
+                )
+
+            st.rerun()
+
+    with col2:
+
+        if st.button(
+            "❌ Cancel",
+            use_container_width=True
+        ):
+            st.rerun()
+
+
+# ==========================================
+# Time In Button
+# ==========================================
+if st.button(
+    "Time In",
+    use_container_width=True
+):
+
+    if not selected_team:
+
+        st.error(
+            "Please select your team."
+        )
+
+    elif not selected_name:
+
+        st.error(
+            "Please select your name."
+        )
+
+    elif not time_in_value:
+
+        st.error(
+            "Please enter your time in."
+        )
+
+    else:
+
+        try:
+
+            datetime.strptime(
+                time_in_value,
+                "%H:%M"
+            )
+
+            confirm_timein()
+
+        except ValueError:
+
+            st.error(
+                "Invalid time format. "
+                "Please use HH:MM "
+                "(Example: 08:30)"
+            )
