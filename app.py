@@ -1,4 +1,5 @@
 import streamlit as st
+import re
 from supabase import create_client
 from datetime import datetime
 from zoneinfo import ZoneInfo
@@ -104,8 +105,8 @@ if selected_team:
 # Manual Time Input
 # ==========================================
 time_in_value = st.text_input(
-    "Time In (HH:MM)",
-    placeholder="08:30"
+     "Time In (Required Format: HH:MM)",
+    placeholder="Example: 08:30"
 )
 
 # ==========================================
@@ -214,44 +215,39 @@ def confirm_timein():
 # ==========================================
 # Time In Button
 # ==========================================
-if st.button(
-    "Time In",
-    use_container_width=True
-):
+if st.button("Time In", use_container_width=True):
 
     if not selected_team:
 
-        st.error(
-            "Please select your team."
-        )
+        st.error("Please select your team.")
 
     elif not selected_name:
 
-        st.error(
-            "Please select your name."
-        )
+        st.error("Please select your name.")
 
     elif not time_in_value:
 
-        st.error(
-            "Please enter your time in."
-        )
+        st.error("Please enter your time in.")
 
     else:
 
-        try:
+        # HH:MM strictly required
+        time_pattern = r"^([01][0-9]|2[0-3]):([0-5][0-9])$"
 
-            datetime.strptime(
-                time_in_value,
-                "%H:%M"
-            )
+        if re.match(time_pattern, time_in_value):
 
             confirm_timein()
 
-        except ValueError:
+        else:
 
             st.error(
-                "Invalid time format. "
-                "Please use HH:MM "
-                "(Example: 08:30)"
+                "Time format must be HH:MM.\n\n"
+                "Examples:\n"
+                "✅ 08:00\n"
+                "✅ 09:30\n"
+                "✅ 17:45\n\n"
+                "Invalid:\n"
+                "❌ 8:00\n"
+                "❌ 9:30\n"
+                "❌ 25:00"
             )
