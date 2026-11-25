@@ -73,7 +73,7 @@ teams = {
 # ==========================================
 # Header
 # ==========================================
-st.title("⏰ Attendance Tracker")
+st.title("⌛ Attendance Tracker")
 
 current_time = datetime.now(PH_TIMEZONE)
 
