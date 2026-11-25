@@ -9,7 +9,7 @@ from zoneinfo import ZoneInfo
 # ==========================================
 st.set_page_config(
     page_title="Attendance Tracker",
-    page_icon="⏰",
+    page_icon="⌛",
     layout="centered"
 )
 
